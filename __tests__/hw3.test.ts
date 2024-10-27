@@ -364,11 +364,19 @@ describe('Homework 3 Integration Tests', () => {
         const newProductName = radix + makeRandomString(5)
         const newProductImage = 'http://localhost:3000/placeholder.png'
 
+        const q = await db
+            .collection('products')
+            .orderBy('id', 'desc')
+            .limit(1)
+            .get()
+        const maxId = q.docs.length > 0 ? q.docs[0].data().id : 0
+
         // Add a new product for this test
         const addedProduct = await db.collection('products').add({
             name: newProductName,
             image_url: newProductImage,
             deleted: false,
+            id: maxId + 1,
         })
         addedProducts.push(addedProduct.id)
         // Click on the Home icon to go back to the product list
